@@ -8,11 +8,29 @@ const navItems = [
   { path: '/owners', label: 'Owners', icon: Users },
 ];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<{ isOpen: boolean; setIsOpen: (val: boolean) => void }> = ({ isOpen, setIsOpen }) => {
   return (
-    <aside className="w-64 border-r border-[var(--color-border)] glass flex flex-col hidden md:flex h-screen sticky top-0">
-      <div className="h-16 flex items-center px-6 border-b border-[var(--color-border)]">
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-50 w-64 border-r border-[var(--color-border)] glass flex flex-col h-screen
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <div className="h-16 flex items-center px-6 border-b border-[var(--color-border)]">
         <h1 className="text-xl font-bold text-gradient">Admin UI</h1>
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="md:hidden ml-auto p-1 rounded-full text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-colors"
+        >
+          <span className="w-5 h-5" >X</span>
+        </button>
       </div>
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
@@ -40,5 +58,6 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
     </aside>
+    </>
   );
 };

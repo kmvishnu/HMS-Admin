@@ -11,9 +11,12 @@ export const Users: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
   
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', password: '' });
 
   const fetchUsers = async () => {
     setIsLoading(true);
@@ -49,6 +52,31 @@ export const Users: React.FC = () => {
     }
   };
 
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUserId) return;
+    setIsSubmitting(true);
+    try {
+      const payload: any = { name: editFormData.name, email: editFormData.email };
+      if (editFormData.password) payload.password = editFormData.password;
+      await apiClient.put(`/users/${editingUserId}`, payload);
+      setIsEditModalOpen(false);
+      setEditingUserId(null);
+      setEditFormData({ name: '', email: '', password: '' });
+      fetchUsers();
+    } catch (error) {
+      console.error("Failed to update user", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const openEditModal = (user: any) => {
+    setEditingUserId(user.id);
+    setEditFormData({ name: user.name, email: user.email, password: '' });
+    setIsEditModalOpen(true);
+  };
+
   const handleDelete = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this owner?")) return;
     try {
@@ -68,12 +96,12 @@ export const Users: React.FC = () => {
       header: 'Actions',
       accessorKey: 'actions',
       cell: (user: any) => (
-        <div className="flex gap-2">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Edit">
-            <Edit className="w-4 h-4 text-blue-500" />
+        <div className="flex gap-3">
+          <Button variant="ghost" size="sm" className="h-10 w-10 p-0" title="Edit" onClick={() => openEditModal(user)}>
+            <Edit className="w-5 h-5 text-blue-500" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleDelete(user.id)} title="Delete">
-            <Trash2 className="w-4 h-4 text-red-500" />
+          <Button variant="ghost" size="sm" className="h-10 w-10 p-0" onClick={() => handleDelete(user.id)} title="Delete">
+            <Trash2 className="w-5 h-5 text-red-500" />
           </Button>
         </div>
       )
@@ -120,6 +148,35 @@ export const Users: React.FC = () => {
           <div className="flex justify-end gap-3 pt-4 border-t border-[var(--color-border)]">
             <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
             <Button type="submit" isLoading={isSubmitting}>Create Owner</Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Owner">
+        <form onSubmit={handleUpdateUser} className="space-y-4">
+          <Input 
+            label="Name" 
+            value={editFormData.name} 
+            onChange={e => setEditFormData({ ...editFormData, name: e.target.value })} 
+            required 
+          />
+          <Input 
+            label="Email" 
+            type="email" 
+            value={editFormData.email} 
+            onChange={e => setEditFormData({ ...editFormData, email: e.target.value })} 
+            required 
+          />
+          <Input 
+            label="New Password (optional)" 
+            type="password" 
+            value={editFormData.password} 
+            onChange={e => setEditFormData({ ...editFormData, password: e.target.value })} 
+            placeholder="Leave blank to keep current password"
+          />
+          <div className="flex justify-end gap-3 pt-4 border-t border-[var(--color-border)]">
+            <Button type="button" variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+            <Button type="submit" isLoading={isSubmitting}>Update Owner</Button>
           </div>
         </form>
       </Modal>
