@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Image as ImageIcon, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Image as ImageIcon, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Table } from '../../components/ui/Table';
 import { Modal } from '../../components/ui/Modal';

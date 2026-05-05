@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Moon, Sun, User, Bell, LogOut, Menu } from 'lucide-react';
+import { Search, Moon, Sun, User, LogOut, Menu } from 'lucide-react';
 import { Input } from '../ui/Input';
 import { applyTheme } from '../../theme/theme';
 import { apiClient } from '../../api/client';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) => {
-  const navigate = useNavigate();
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any>(null);

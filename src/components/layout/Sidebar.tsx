@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, Users } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, X } from 'lucide-react';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -29,7 +29,7 @@ export const Sidebar: React.FC<{ isOpen: boolean; setIsOpen: (val: boolean) => v
           onClick={() => setIsOpen(false)}
           className="md:hidden ml-auto p-1 rounded-full text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-background)] transition-colors"
         >
-          <span className="w-5 h-5" >X</span>
+          <X className="w-5 h-5" ></X>
         </button>
       </div>
       <nav className="flex-1 p-4 space-y-2">
