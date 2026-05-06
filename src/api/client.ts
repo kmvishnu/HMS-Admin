@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:8081',
+  baseURL: 'https://hms-server-mu.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },
