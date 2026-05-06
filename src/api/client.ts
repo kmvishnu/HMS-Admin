@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'https://hms-server-mu.vercel.app',
+  baseURL: 'http://localhost:8081',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -67,7 +67,7 @@ apiClient.interceptors.response.use(
       }
 
       try {
-        const { data } = await axios.post('https://hms-server-mu.vercel.app/auth/refresh', { refreshToken });
+        const { data } = await axios.post('http://localhost:8081/auth/refresh', { refreshToken });
         const newAccessToken = data.data.accessToken;
         const newRefreshToken = data.data.refreshToken;
         

@@ -120,7 +120,7 @@ export const Hotels: React.FC = () => {
   const handleDeleteImage = async (imageUrl: string) => {
     if (!window.confirm("Delete this image?")) return;
     try {
-      await apiClient.delete(`/hotels/${editingHotel.id}/images`, { data: { imageUrl } });
+      await apiClient.delete(`/hotel/${editingHotel.id}/images`, { data: { imageUrl } });
       setEditingHotel({
         ...editingHotel,
         image_urls: editingHotel.image_urls.filter((url: string) => url !== imageUrl)
@@ -136,7 +136,7 @@ export const Hotels: React.FC = () => {
     const formData = new FormData();
     formData.append('image', newImageFile);
     try {
-      await apiClient.post(`/hotels/${editingHotel.id}/images`, formData, {
+      await apiClient.post(`/hotel/${editingHotel.id}/images`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setNewImageFile(null);
