@@ -47,7 +47,7 @@ export const Hotels: React.FC = () => {
       accessorKey: 'owner',
       cell: (h: any) => (
         <button 
-          onClick={(e) => { e.stopPropagation(); navigate(`/admin/owners/${h.owner_id}`); }}
+          onClick={(e) => { e.stopPropagation(); navigate(`/admin/users/${h.owner_id}`); }}
           className="text-blue-500 hover:underline font-medium"
         >
           {h.owner_name}

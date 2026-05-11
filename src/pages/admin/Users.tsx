@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, X } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Table } from '../../components/ui/Table';
@@ -8,8 +8,10 @@ import { Select } from '../../components/ui/Select';
 import { Pagination } from '../../components/ui/Pagination';
 import { Badge } from '../../components/ui/Badge';
 import { useAdminUsers, useCreateUser, useUpdateUser, useDeleteUser } from '../../hooks/useAdminHooks';
+import { useState } from 'react';
 
 export const Users: React.FC = () => {
+  const navigate = useNavigate();
   const [params, setParams] = useState({ page: 1, limit: 10, role: '', search: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
@@ -22,7 +24,8 @@ export const Users: React.FC = () => {
 
   const handlePageChange = (page: number) => setParams({ ...params, page });
   
-  const openEditModal = (user: any) => {
+  const openEditModal = (user: any, e: React.MouseEvent) => {
+    e.stopPropagation();
     setEditingUser(user);
     setFormData({ name: user.name, email: user.email, password: '', role: user.role });
     setIsModalOpen(true);
@@ -44,7 +47,8 @@ export const Users: React.FC = () => {
     handleCloseModal();
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
       deleteUser.mutate(id);
     }
@@ -71,10 +75,10 @@ export const Users: React.FC = () => {
       accessorKey: 'actions',
       cell: (u: any) => (
         <div className="flex gap-2">
-          <Button variant="ghost" size="sm" onClick={() => openEditModal(u)} className="p-2 h-9 w-9">
+          <Button variant="ghost" size="sm" onClick={(e) => openEditModal(u, e)} className="p-2 h-9 w-9">
             <Edit className="w-4 h-4 text-blue-500" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => handleDelete(u.id)} className="p-2 h-9 w-9">
+          <Button variant="ghost" size="sm" onClick={(e) => handleDelete(u.id, e)} className="p-2 h-9 w-9">
             <Trash2 className="w-4 h-4 text-red-500" />
           </Button>
         </div>
@@ -130,6 +134,7 @@ export const Users: React.FC = () => {
           columns={columns} 
           data={filteredUsers} 
           isLoading={isLoading} 
+          onRowClick={(u) => navigate(`/admin/users/${u.id}`)}
           emptyMessage="No users found matching your criteria."
         />
         

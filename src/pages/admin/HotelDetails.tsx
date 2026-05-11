@@ -169,7 +169,7 @@ export const HotelDetails: React.FC = () => {
                 variant="ghost" 
                 size="sm" 
                 className="mt-2 w-full justify-start pl-0 text-blue-500 hover:text-blue-600"
-                onClick={() => navigate(`/admin/owners/${hotel.owner_id}`)}
+                onClick={() => navigate(`/admin/users/${hotel.owner_id}`)}
               >
                 View Owner Profile →
               </Button>

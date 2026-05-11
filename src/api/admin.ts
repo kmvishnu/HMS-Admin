@@ -20,6 +20,25 @@ export const adminApi = {
     const response = await apiClient.get('/admin/users', { params });
     return response.data; // Returning full response because it contains pagination info
   },
+  getUserDetails: async (id: number) => {
+    const response = await apiClient.get(`/admin/users/${id}`);
+    const data = response.data.data;
+    
+    // Normalize role
+    if (data.role === 'HOTEL_OWNER') data.role = 'OWNER';
+    
+    // Normalize stats if it's an owner
+    if (data.role === 'OWNER' && data.details?.stats) {
+      const s = data.details.stats;
+      data.details.stats = {
+        totalHotels: Number(s.total_hotels || 0),
+        totalBookings: Number(s.total_bookings || 0),
+        activeBookings: Number(s.active_bookings || 0)
+      };
+    }
+    
+    return data;
+  },
   createUser: async (userData: any) => {
     const response = await apiClient.post('/admin/users', userData);
     return response.data.data;
@@ -55,12 +74,6 @@ export const adminApi = {
   },
   deleteHotel: async (id: number) => {
     const response = await apiClient.delete(`/admin/hotels/${id}`);
-    return response.data.data;
-  },
-
-  // Owners
-  getOwnerDetails: async (id: number) => {
-    const response = await apiClient.get(`/admin/owners/${id}`);
     return response.data.data;
   },
 

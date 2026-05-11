@@ -21,6 +21,15 @@ export const useAdminUsers = (params: any) => {
   });
 };
 
+export const useAdminUserDetails = (id: number) => {
+  return useQuery({
+    queryKey: ['admin-user', id],
+    queryFn: () => adminApi.getUserDetails(id),
+    staleTime: STALE_TIME,
+    enabled: !!id,
+  });
+};
+
 export const useAdminHotels = (params: any) => {
   return useQuery({
     queryKey: ['admin-hotels', params],
@@ -45,15 +54,6 @@ export const useAdminBookings = (params: any) => {
     queryFn: () => adminApi.getBookings(params),
     staleTime: STALE_TIME,
     placeholderData: (previousData) => previousData,
-  });
-};
-
-export const useAdminOwnerDetails = (id: number) => {
-  return useQuery({
-    queryKey: ['admin-owner', id],
-    queryFn: () => adminApi.getOwnerDetails(id),
-    staleTime: STALE_TIME,
-    enabled: !!id,
   });
 };
 
