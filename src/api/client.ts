@@ -1,7 +1,8 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export const apiClient = axios.create({
-  baseURL: 'https://hms-server-mu.vercel.app',
+  baseURL: 'http://localhost:8081',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +11,7 @@ export const apiClient = axios.create({
 // Request interceptor to add token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // accessToken
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +28,7 @@ let failedQueue: Array<{
 }> = [];
 
 const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach(prom => {
+  failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
@@ -43,16 +44,17 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(token => {
-          originalRequest.headers['Authorization'] = 'Bearer ' + token;
-          return apiClient(originalRequest);
-        }).catch(err => {
-          return Promise.reject(err);
-        });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return apiClient(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
@@ -60,37 +62,55 @@ apiClient.interceptors.response.use(
 
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        handleLogout();
         return Promise.reject(error);
       }
 
       try {
-        const { data } = await axios.post('http://localhost:8081/auth/refresh', { refreshToken });
-        const newAccessToken = data.data.accessToken;
-        const newRefreshToken = data.data.refreshToken;
-        
-        localStorage.setItem('token', newAccessToken);
+        // Use separate axios instance for refresh to avoid interceptor issues
+        const response = await axios.post('http://localhost:8081/auth/refresh', { refreshToken });
+        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+
+        localStorage.setItem('token', accessToken);
         localStorage.setItem('refreshToken', newRefreshToken);
-        
-        apiClient.defaults.headers.common['Authorization'] = 'Bearer ' + newAccessToken;
-        originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
-        
-        processQueue(null, newAccessToken);
+
+        apiClient.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+        processQueue(null, accessToken);
         return apiClient(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        handleLogout();
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
       }
     }
 
+    // Global Error Handling
+    const message = error.response?.data?.message || 'An unexpected error occurred';
+    const status = error.response?.status;
+
+    if (status === 400) {
+      toast.error(`Validation Error: ${message}`);
+    } else if (status === 404) {
+      toast.error('Resource not found');
+    } else if (status >= 500) {
+      toast.error('Server error. Please try again later.');
+    } else if (status !== 401) {
+      toast.error(message);
+    }
+
     return Promise.reject(error);
   }
 );
+
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+};
