@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Moon, Sun, User, LogOut, Menu } from 'lucide-react';
-import { Input } from '../ui/Input';
+import { Moon, Sun, User, LogOut, Menu } from 'lucide-react';
 import { applyTheme } from '../../theme/theme';
-import { apiClient } from '../../api/client';
-import { Link } from 'react-router-dom';
 
 export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     applyTheme(theme);
@@ -19,29 +12,6 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
-
-  useEffect(() => {
-    const fetchResults = async () => {
-      if (!searchQuery.trim()) {
-        setSearchResults(null);
-        setShowDropdown(false);
-        return;
-      }
-      setIsSearching(true);
-      try {
-        const response = await apiClient.get(`/admin/search?q=${searchQuery}`);
-        setSearchResults(response.data.data);
-        setShowDropdown(true);
-      } catch (error) {
-        console.error("Search failed", error);
-      } finally {
-        setIsSearching(false);
-      }
-    };
-
-    const debounce = setTimeout(fetchResults, 300);
-    return () => clearTimeout(debounce);
-  }, [searchQuery]);
 
   const handleLogout = () => {
     if (!window.confirm("Are you sure you want to logout?")) return;

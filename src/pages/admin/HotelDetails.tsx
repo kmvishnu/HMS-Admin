@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Building2, MapPin, CheckCircle, XCircle, Image as ImageIcon } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Table } from '../../components/ui/Table';
-import { Pagination } from '../../components/ui/Pagination';
 import { useAdminHotelDetails, useToggleVisibility } from '../../hooks/useAdminHooks';
 
 export const HotelDetails: React.FC = () => {
@@ -13,7 +12,6 @@ export const HotelDetails: React.FC = () => {
   const navigate = useNavigate();
   const hotelId = parseInt(id || '0', 10);
   
-  const [bookingPage, setBookingPage] = useState(1);
   const { data: hotel, isLoading } = useAdminHotelDetails(hotelId);
   const toggleVisibility = useToggleVisibility();
 

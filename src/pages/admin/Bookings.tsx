@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Filter, RotateCcw, Building2, User, Hotel } from 'lucide-react';
+import { RotateCcw, Hotel } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Table } from '../../components/ui/Table';
 import { Button } from '../../components/ui/Button';
