@@ -49,6 +49,7 @@ export const Sidebar: React.FC<{ isOpen: boolean; setIsOpen: (val: boolean) => v
                 key={item.path}
                 to={item.path}
                 end={item.path === '/admin'}
+                onClick={() => setIsOpen(false)}
                 className={({ isActive }) => `
                   flex items-center gap-3 px-4 py-3 rounded-xl transition-all
                   ${isActive 

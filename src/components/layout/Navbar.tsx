@@ -60,7 +60,7 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
         >
           <Menu className="w-5 h-5" />
         </button>
-        <div className="flex-1">
+        {/* <div className="flex-1">
           <Input
             placeholder="Search hotels, owners..."
             icon={<Search className="w-4 h-4" />}
@@ -70,7 +70,6 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           />
 
-          {/* Search Dropdown */}
           {showDropdown && searchResults && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl shadow-2xl overflow-hidden glass z-50">
               {isSearching ? (
@@ -107,7 +106,7 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
               )}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <div className="flex items-center gap-4 ml-4">

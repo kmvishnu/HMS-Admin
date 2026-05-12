@@ -123,3 +123,26 @@ export const useDeleteHotel = () => {
     },
   });
 };
+
+export const useCreateHotel = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: adminApi.createHotel,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-hotels'] });
+      toast.success('Hotel created successfully');
+    },
+  });
+};
+
+export const useUpdateHotel = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) => adminApi.updateHotel(id, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-hotels'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-hotel', variables.id] });
+      toast.success('Hotel updated successfully');
+    },
+  });
+};

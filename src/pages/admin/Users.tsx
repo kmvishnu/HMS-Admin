@@ -15,7 +15,7 @@ export const Users: React.FC = () => {
   const [params, setParams] = useState({ page: 1, limit: 10, role: '', search: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'OWNER' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'HOTEL_OWNER' });
 
   const { data, isLoading } = useAdminUsers(params);
   const createUser = useCreateUser();
@@ -23,7 +23,7 @@ export const Users: React.FC = () => {
   const deleteUser = useDeleteUser();
 
   const handlePageChange = (page: number) => setParams({ ...params, page });
-  
+
   const openEditModal = (user: any, e: React.MouseEvent) => {
     e.stopPropagation();
     setEditingUser(user);
@@ -34,7 +34,7 @@ export const Users: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingUser(null);
-    setFormData({ name: '', email: '', password: '', role: 'OWNER' });
+    setFormData({ name: '', email: '', password: '', role: 'HOTEL_OWNER' });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +42,7 @@ export const Users: React.FC = () => {
     if (editingUser) {
       await updateUser.mutateAsync({ id: editingUser.id, data: formData });
     } else {
-      await createUser.mutateAsync({ ...formData, role: 'OWNER' });
+      await createUser.mutateAsync({ ...formData, role: 'HOTEL_OWNER' });
     }
     handleCloseModal();
   };
@@ -60,11 +60,11 @@ export const Users: React.FC = () => {
   const columns = [
     { header: 'Name', accessorKey: 'name', cell: (u: any) => <span className="font-bold">{u.name}</span> },
     { header: 'Email', accessorKey: 'email' },
-    { 
-      header: 'Role', 
+    {
+      header: 'Role',
       accessorKey: 'role',
       cell: (u: any) => (
-        <Badge variant={u.role === 'OWNER' ? 'success' : 'default'}>
+        <Badge variant={u.role === 'HOTEL_OWNER' ? 'success' : 'default'}>
           {u.role}
         </Badge>
       )
@@ -94,21 +94,22 @@ export const Users: React.FC = () => {
           <p className="text-[var(--color-text-muted)] text-sm">Manage platform users and roles</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" /> Create Owner
+          <Plus className="w-4 h-4 sm:mr-2" />
+          <span className="hidden sm:inline">Create Owner</span>
         </Button>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 p-4 glass rounded-xl border border-[var(--color-border)]">
         <div className="flex-1 relative min-w-[300px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
-          <Input 
-            placeholder="Search by name or email..." 
-            className="pl-10 pr-10 w-full text-slate-800"
+          <Input
+            placeholder="Search by name or email..."
+            className="pl-10 pr-10 w-full text-text"
             value={params.search}
             onChange={(e) => setParams({ ...params, search: e.target.value, page: 1 })}
           />
           {params.search && (
-            <button 
+            <button
               onClick={() => setParams({ ...params, search: '', page: 1 })}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-red-500 transition-colors"
             >
@@ -116,11 +117,11 @@ export const Users: React.FC = () => {
             </button>
           )}
         </div>
-        <Select 
+        <Select
           className="w-full md:w-48"
           options={[
             { value: '', label: 'All Roles' },
-            { value: 'OWNER', label: 'Owner' },
+            { value: 'HOTEL_OWNER', label: 'Owner' },
             { value: 'STAFF', label: 'Staff' },
             { value: 'CUSTOMER', label: 'Customer' },
           ]}
@@ -130,16 +131,16 @@ export const Users: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        <Table 
-          columns={columns} 
-          data={filteredUsers} 
-          isLoading={isLoading} 
+        <Table
+          columns={columns}
+          data={filteredUsers}
+          isLoading={isLoading}
           onRowClick={(u) => navigate(`/admin/users/${u.id}`)}
           emptyMessage="No users found matching your criteria."
         />
-        
+
         {data?.pagination && (
-          <Pagination 
+          <Pagination
             currentPage={data.pagination.page}
             totalPages={Math.ceil(data.pagination.total / data.pagination.limit)}
             onPageChange={handlePageChange}
@@ -148,35 +149,35 @@ export const Users: React.FC = () => {
         )}
       </div>
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
         title={editingUser ? 'Edit Owner' : 'Create New Owner'}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input 
-            label="Full Name" 
-            value={formData.name} 
+          <Input
+            label="Full Name"
+            value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required 
-            className="text-slate-800"
+            required
+            className="text-text"
           />
-          <Input 
-            label="Email Address" 
+          <Input
+            label="Email Address"
             type="email"
-            value={formData.email} 
+            value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required 
-            className="text-slate-800"
+            required
+            className="text-text"
           />
           {!editingUser && (
-            <Input 
-              label="Password" 
+            <Input
+              label="Password"
               type="password"
-              value={formData.password} 
+              value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              required 
-              className="text-slate-800"
+              required
+              className="text-text"
             />
           )}
           <div className="flex justify-end gap-3 pt-4 border-t border-[var(--color-border)]">

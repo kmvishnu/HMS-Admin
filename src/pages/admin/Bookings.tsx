@@ -131,12 +131,22 @@ export const Bookings: React.FC = () => {
         <div className="w-full md:w-48">
           <div className="space-y-1">
             <label className="block text-sm font-medium text-[var(--color-text-muted)]">Arrival Date</label>
-            <input 
-              type="date" 
-              className="flex h-10 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
-              value={params.date}
-              onChange={(e) => setParams({ ...params, date: e.target.value, page: 1 })}
-            />
+            <div className="relative w-full">
+              <input 
+                type="date" 
+                className="
+                  block h-10 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] 
+                  pl-3 pr-10 py-2 text-sm text-[var(--color-text)] text-left 
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]
+                  [&::-webkit-calendar-picker-indicator]:absolute 
+                  [&::-webkit-calendar-picker-indicator]:right-3 
+                  [&::-webkit-calendar-picker-indicator]:cursor-pointer
+                  [&::-webkit-datetime-edit-fields-wrapper]:w-[calc(100%-24px)]
+                "
+                value={params.date}
+                onChange={(e) => setParams({ ...params, date: e.target.value, page: 1 })}
+              />
+            </div>
           </div>
         </div>
       </Card>

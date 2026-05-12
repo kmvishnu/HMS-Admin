@@ -2,7 +2,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:8081',
+  baseURL: 'https://hms-server-mu.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -68,7 +68,7 @@ apiClient.interceptors.response.use(
 
       try {
         // Use separate axios instance for refresh to avoid interceptor issues
-        const response = await axios.post('http://localhost:8081/auth/refresh', { refreshToken });
+        const response = await axios.post('https://hms-server-mu.vercel.app/auth/refresh', { refreshToken });
         const { accessToken, refreshToken: newRefreshToken } = response.data.data;
 
         localStorage.setItem('token', accessToken);

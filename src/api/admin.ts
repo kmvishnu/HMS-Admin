@@ -68,6 +68,16 @@ export const adminApi = {
       bookings: bookings || []
     };
   },
+  createHotel: async (formData: FormData) => {
+    const response = await apiClient.post('/hotels', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data.data;
+  },
+  updateHotel: async (id: number, hotelData: any) => {
+    const response = await apiClient.put(`/hotels/${id}`, hotelData);
+    return response.data.data;
+  },
   toggleHotelVisibility: async (id: number, isVisible: boolean) => {
     const response = await apiClient.put(`/admin/hotels/${id}/visibility`, { isVisible });
     return response.data.data;
