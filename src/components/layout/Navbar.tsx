@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Moon, Sun, User, LogOut, Menu } from 'lucide-react';
-import { Input } from '../ui/Input';
+import { Moon, Sun, User, LogOut, Menu } from 'lucide-react';
 import { applyTheme } from '../../theme/theme';
-import { apiClient } from '../../api/client';
-import { Link } from 'react-router-dom';
 
 export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     applyTheme(theme);
@@ -19,29 +12,6 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
-
-  useEffect(() => {
-    const fetchResults = async () => {
-      if (!searchQuery.trim()) {
-        setSearchResults(null);
-        setShowDropdown(false);
-        return;
-      }
-      setIsSearching(true);
-      try {
-        const response = await apiClient.get(`/admin/search?q=${searchQuery}`);
-        setSearchResults(response.data.data);
-        setShowDropdown(true);
-      } catch (error) {
-        console.error("Search failed", error);
-      } finally {
-        setIsSearching(false);
-      }
-    };
-
-    const debounce = setTimeout(fetchResults, 300);
-    return () => clearTimeout(debounce);
-  }, [searchQuery]);
 
   const handleLogout = () => {
     if (!window.confirm("Are you sure you want to logout?")) return;
@@ -60,7 +30,7 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
         >
           <Menu className="w-5 h-5" />
         </button>
-        <div className="flex-1">
+        {/* <div className="flex-1">
           <Input
             placeholder="Search hotels, owners..."
             icon={<Search className="w-4 h-4" />}
@@ -70,7 +40,6 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           />
 
-          {/* Search Dropdown */}
           {showDropdown && searchResults && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl shadow-2xl overflow-hidden glass z-50">
               {isSearching ? (
@@ -107,7 +76,7 @@ export const Navbar: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) =
               )}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <div className="flex items-center gap-4 ml-4">
